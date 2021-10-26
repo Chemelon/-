@@ -1,0 +1,1 @@
+pyinstaller -F -w --icon .\favicon.ico .\GUI.py
