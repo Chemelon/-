@@ -24,6 +24,7 @@
 ![位置与定位位置](https://images.gitee.com/uploads/images/2021/1026/161508_b904bf17_8545143.png "QQ截图20211026155105.png")
 
 3.  运行GUI.exe
+4.  可以创建windows计划任务的方式自动打卡，方法自行百度
 
 #### 参与贡献
 
