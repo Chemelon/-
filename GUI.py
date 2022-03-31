@@ -14,14 +14,37 @@ url_pushform = 'https://yqtb.sut.edu.cn/punchForm'
 # 获取当前日期
 
 
-def get_Date(d):
-    day = int(time.strftime("%d")) + d
-    if day < 10:
-        day = '0' + str(day)
-    year = time.strftime("%Y-%m-")
+def get_Date(value):
+    DayPerMonth = [0,31,28,31,30,31,30,31,31,30,31,30,31]
+    time_localtime = time.localtime(time.time())
+    yue = time_localtime.tm_mon
+    ri = time_localtime.tm_mday
+    nian = time_localtime.tm_year
+    # 正常将日期加一
+    tommorrow = ri + value
+
+    if value != 0:
+        # 闰年：1. 被4整除，不被100整除 2. 被400整除
+        if (nian % 4 == 0 and nian % 100 != 0) or nian % 400 == 0:
+            if(yue == 2 and ri == 28):
+                tommorrow =  1
+                yue += 1
+        # 非闰年的二月
+        elif(yue == 2 and ri == 29):
+            tommorrow = 1
+            yue += 1
+        # 根据List判断是否是当月最后一天
+        if(ri == DayPerMonth[yue]):
+            tommorrow = 1
+            yue += 1
+
+    if tommorrow < 10:
+        tommorrow = '0' + str(tommorrow)
+    if yue < 10:
+        yue = '0' + str(yue)
     # 格式化日期
-    date = '{}{}'.format(year, day)
-    # print(date)
+    date = '{}-{}-{}'.format(nian, yue ,tommorrow )
+    print(date)
     return date
 
 
@@ -165,7 +188,7 @@ def punch():
         print('\n打卡完成!\n')
         file_log.write(f'{time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())}  打卡完成!\n')
         file_log.close()
-        Msg.insert('insert', '\n打卡完成！\n')
+        Msg.insert('insert', '\n打卡完成!\n')
         btn['state'] = 'active'
         exit['state'] = 'active'
     except Exception as e:
