@@ -5,6 +5,12 @@ import time
 from tkinter import scrolledtext
 import threading
 
+# 配置代理 不使用代理
+proxies = {
+"http": "",
+"https": "",
+}
+
 # 请求链接
 url_login = 'https://yqtb.sut.edu.cn/login'
 url_getform = 'https://yqtb.sut.edu.cn/getPunchForm'
@@ -33,7 +39,7 @@ def get_Date(value):
         elif(yue == 2 and ri == 29):
             tommorrow = 1
             yue += 1
-        # 根据List判断是否是当月最后一天
+        # 根据List判断是否是30 或 31 天的月分的最后一天
         if(ri == DayPerMonth[yue]):
             tommorrow = 1
             yue += 1
@@ -112,6 +118,7 @@ def punch():
         # 打卡时不能退出
         btn['state'] = 'disabled'
         exit['state'] = 'disabled'
+        Msg['state'] = 'normal'
         # 根据账号数量计算循环次数
         length = len(file_dic['账号'])
         # 特殊处理防止账号数量为 1 时不能进入循环
@@ -130,7 +137,7 @@ def punch():
             Msg.insert('insert', f'\n当前账号:{msg}\n')
             window.update()
             # 登录
-            resp = session.post(url_login, headers=headers, json=data, verify=False)
+            resp = session.post(url_login, headers=headers, json=data, verify=False,proxies=proxies)
 
             # 打印登录信息
             dic = resp.json()
@@ -141,7 +148,7 @@ def punch():
             window.update()
 
             # 请求上次打卡信息
-            resp = session.post(url_getform, headers=headers, json=get_form, verify=False)
+            resp = session.post(url_getform, headers=headers, json=get_form, verify=False,proxies=proxies)
 
             # 打印请求状态
             dic = resp.json()
@@ -172,7 +179,7 @@ def punch():
                 # print(push_form)
 
                 # 打卡
-                resp = session.post(url_pushform, headers=headers, json=push_form, verify=False)
+                resp = session.post(url_pushform, headers=headers, json=push_form, verify=False,proxies=proxies)
 
                 # 打印打卡信息
                 dic = resp.json()
@@ -191,6 +198,7 @@ def punch():
         Msg.insert('insert', '\n打卡完成!\n')
         btn['state'] = 'active'
         exit['state'] = 'active'
+        Msg['state'] = 'disabled'
     except Exception as e:
         Msg.insert('insert', f'发生错误:{e}\n')
         btn['state'] = 'active'
